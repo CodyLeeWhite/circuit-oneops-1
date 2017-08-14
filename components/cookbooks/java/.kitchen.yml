@@ -2,7 +2,7 @@ driver:
   name: vagrant
   http_proxy: http://proxy.wal-mart.com:9080
   https_proxy: http://proxy.wal-mart.com:9080
-  no_proxy: .local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com
+  #no_proxy: .local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com
   customize:
     memory: 2048
     cpuexecutioncap: 70
@@ -14,7 +14,6 @@ provisioner:
   name: chef_solo
   script: "bootstrap.sh"
   cookbook_files_glob: "**/*"
-  #chef_omnibus_url: http://www.chef.io/chef/install.sh
   require_chef_omnibus: 11.18.12
   solo_rb:
     verify_api_cert: true
