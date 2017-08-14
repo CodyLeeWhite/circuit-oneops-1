@@ -1,0 +1,58 @@
+driver:
+  name: vagrant
+#  http_proxy: http://proxy.wal-mart.com:9080
+#  https_proxy: http://proxy.wal-mart.com:9080
+  driver_config:
+    http_proxy: http://proxy.wal-mart.com:9080
+    https_proxy: http://proxy.wal-mart.com:9080
+
+  customize:
+    memory: 2048
+    cpuexecutioncap: 70
+platforms:
+  -
+    name: centos-6.8
+
+provisioner:
+  name: chef_solo
+  script: "bootstrap.sh"
+  cookbook_files_glob: "**/*"
+  #chef_omnibus_url: http://www.chef.io/chef/install.sh
+  require_chef_omnibus: 11.18.12
+  solo_rb:
+    verify_api_cert: true
+    ssl_verify_mode: :verify_peer
+    log_level: :info
+
+suites:
+  -
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "server-jre"
+        sysdefault: "true"
+        version: "8"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+    name: java
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/java/serverspec/
+# Kitchen yaml is very picky about the file path and name of your serverspec test file
+# The path must match [COOKBOOK]/test/integration/[SUITES]/serverspec/*_spec.rb
+# Globbing pattern to match files is "serverspec/*/*_spec.rb"
