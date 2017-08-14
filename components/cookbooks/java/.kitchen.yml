@@ -1,11 +1,8 @@
 driver:
   name: vagrant
-#  http_proxy: http://proxy.wal-mart.com:9080
-#  https_proxy: http://proxy.wal-mart.com:9080
-  driver_config:
-    http_proxy: http://proxy.wal-mart.com:9080
-    https_proxy: http://proxy.wal-mart.com:9080
-
+  http_proxy: http://proxy.wal-mart.com:9080
+  https_proxy: http://proxy.wal-mart.com:9080
+  no_proxy: .local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com
   customize:
     memory: 2048
     cpuexecutioncap: 70

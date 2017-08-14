@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "changing DNS"
-#grep "http_proxy" /home/vagrant/.bash_profile
-#if [ $? -eq 1 ]
-#    then
-#    sudo printf "export http_proxy=http://proxy.wal-mart.com:9080 \nexport https_proxy=http://proxy.wal-mart.com:9080 \n" >> /home/vagrant/.bash_profile
-#    sudo printf "export no_proxy=.local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com\n" >> /home/vagrant/.bash_profile
-#fi
+grep "http_proxy" /home/vagrant/.bash_profile
+if [ $? -eq 1 ]
+    then
+    sudo printf "export http_proxy=http://proxy.wal-mart.com:9080 \nexport https_proxy=http://proxy.wal-mart.com:9080 \n" >> /home/vagrant/.bashrc
+    sudo printf "export no_proxy=.local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com\n" >> /home/vagrant/.bashrc
+fi
 sudo printf "search wal-mart.com walmart.com homeoffice.wal-mart.com \nnameserver 172.17.40.10 \nnameserver 172.17.168.10\n" > /etc/resolv.conf
 sudo /opt/chef/embedded/bin/gem sources --add http://sourcerepos.walmart.com/gembox/
 sudo /opt/chef/embedded/bin/gem sources -r https://rubygems.org/
