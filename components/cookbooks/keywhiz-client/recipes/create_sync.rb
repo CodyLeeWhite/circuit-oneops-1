@@ -108,7 +108,7 @@ ruby_block 'check_process' do
     metrics.each do |metric| 
     	if (metric["metric"] == 'keysync.seconds_since_last_success')
     	    metric_value = metric["value"]
-    	    Chef::Log.info("Last connected successfully " + metric_value.to_s + " sencods ago")
+    	    Chef::Log.info("Last connected successfully " + metric_value.to_s + " seconds ago")
     	    if (metric_value > 0 && metric_value < 5)	
     		Chef::Log.info("keysync working fine.")
     		break
