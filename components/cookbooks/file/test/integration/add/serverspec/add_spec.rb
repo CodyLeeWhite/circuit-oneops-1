@@ -31,3 +31,7 @@ end
 describe file($node['workorder']['rfcCi']['ciAttributes']['path']) do
   it { should be_readable }
 end
+
+describe file($node['workorder']['rfcCi']['ciAttributes']['path']) do
+  it { should contain $node['workorder']['rfcCi']['ciAttributes']['content'] }
+end
