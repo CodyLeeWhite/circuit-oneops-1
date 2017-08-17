@@ -152,7 +152,7 @@ resource "keystore",
 resource "artifact",
   :cookbook => "oneops.1.artifact",
   :design => true,
-  :requires => { "constraint" => "0..*" },
+  :requires => { "constraint" => "0..*", "services" => "*maven" },
   :attributes => {
 
   },
