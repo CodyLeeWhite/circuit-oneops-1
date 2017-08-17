@@ -27,4 +27,4 @@ echo "Done"
 
 echo "install zip and unzip"
 sudo yum clean metadata
-sudo yum install zip unzip -y --noplugin
+sudo yum install zip unzip -y
