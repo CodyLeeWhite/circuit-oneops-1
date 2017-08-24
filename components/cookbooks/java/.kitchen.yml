@@ -1,8 +1,5 @@
 driver:
   name: vagrant
-  http_proxy: http://proxy.wal-mart.com:9080
-  https_proxy: http://proxy.wal-mart.com:9080
-  no_proxy: .local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com
   customize:
     memory: 2048
     cpuexecutioncap: 70
@@ -21,288 +18,287 @@ provisioner:
     log_level: :info
 
 suites:
-  -
-#    name: OracleJre6
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJre6/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jre"
-#        sysdefault: "true"
-#        version: "6"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleJre7
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJre7/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jre"
-#        sysdefault: "true"
-#        version: "7"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleJre8
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJre8/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jre"
-#        sysdefault: "true"
-#        version: "8"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleJdk6
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJdk6/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jdk"
-#        sysdefault: "true"
-#        version: "6"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleJdk7
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJdk7/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jdk"
-#        sysdefault: "true"
-#        version: "7"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleJdk8
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJdk8/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jdk"
-#        sysdefault: "true"
-#        version: "8"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleServerJre7
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJdk7/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "server-jre"
-#        sysdefault: "true"
-#        version: "7"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: OracleServerJre8
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/OracleJdk8/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "oracle"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "server-jre"
-#        sysdefault: "true"
-#        version: "8"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: openJdkJre6
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/openJdkJre6/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "openjdk"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jre"
-#        sysdefault: "true"
-#        version: "6"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-#    name: openJdkJre7
-#    run_list:
-#      - recipe[kitchen-test-helper]
-#      - recipe[java::add]
-#    veridier:
-#      inspec_tests:
-#        - test/integration/openJdkJre7/serverspec/
-#    attributes:
-#      workorder:
-#        services:
-#          mirror:
-#            prod-dfw1:
-#              ciAttributes:
-#                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
-#        cloud:
-#          ciName: "prod-dfw1"
-#      user:
-#      app_name: "java"
-#      java:
-#        flavor: "openjdk"
-#        install_dir: "/usr/lib/jvm"
-#        jrejdk: "jre"
-#        sysdefault: "true"
-#        version: "7"
-#        uversion: ""
-#        enable_jce: "false"
-#        binpath: ""
-##------------------------------------------------------------------------------------------------------------------------------------------------------
-    name: openJdkJre8
+  - name: OracleJre6
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJre6/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "6"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleJre7
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJre7/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "7"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleJre8
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJre8/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "8"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleJdk6
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJdk6/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "6"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleJdk7
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJdk7/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "7"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleJdk8
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJdk8/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "8"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleServerJre7
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJdk7/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "server-jre"
+        sysdefault: "true"
+        version: "7"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: OracleServerJre8
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJdk8/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "server-jre"
+        sysdefault: "true"
+        version: "8"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJre6
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/openJdkJre6/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "openjdk"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "6"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJre7
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/openJdkJre7/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "openjdk"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "7"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJre8
     run_list:
       - recipe[kitchen-test-helper]
       - recipe[java::add]
