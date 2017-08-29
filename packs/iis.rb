@@ -49,7 +49,8 @@ resource "iis-website",
     "dc_file_directory" => '$OO_LOCAL{log_directory}\\IISTemporaryCompressedFiles',
     "sc_file_directory" => '$OO_LOCAL{log_directory}\\IISTemporaryCompressedFiles',
     "windows_authentication" => 'false',
-    "period"  => 'Daily'
+    "period"  => 'Daily',
+    "requestfiltering_allow_high_bit_characters" => 'false'
   },
   :monitors => {
   'IISW3SVC' =>  { :description => 'W3SVC service status',

@@ -69,11 +69,23 @@ template "/opt/oneops/keywhiz/keysync/clients/client.yaml" do
   })
 end
 
+#know if this machine runs systemd
+runs_systemd = `pidof systemd`
+
 template "/usr/lib/systemd/system/keysync.service" do
   source "keysync-service.erb"
   owner "root"
   group "root"
   mode 00644
+  only_if { runs_systemd == 1 }
+end
+
+template "/etc/init.d/keysync" do
+  source "keysync-init.erb"
+  owner "root"
+  group "root"
+  mode 00755
+  only_if { runs_systemd != 1 }
 end
 
 file "/etc/rsyslog.d/oneops-keysync.conf" do
@@ -85,7 +97,10 @@ cookbook_file "/etc/logrotate.d/oneops-keysync" do
 	action :create
 end
 
-execute "systemctl daemon-reload"
+execute "reload_daemon" do
+  command "systemctl daemon-reload"
+  only_if { runs_systemd == 1 }
+end
 
 service "keysync" do
   supports :status => true, :restart => true
@@ -109,7 +124,7 @@ ruby_block 'check_process' do
     	if (metric["metric"] == 'keysync.seconds_since_last_success')
     	    metric_value = metric["value"]
     	    Chef::Log.info("Last connected successfully " + metric_value.to_s + " seconds ago")
-    	    if (metric_value > 0 && metric_value < 5)	
+    	    if (metric_value > 0 && metric_value < 10)	
     		Chef::Log.info("keysync working fine.")
     		break
     	    else

@@ -25,6 +25,14 @@ node.set['cloud_provider'] = provider
 ostype = node[:workorder][:rfcCi][:ciAttributes][:ostype]
 Chef::Log.info("OS type: #{ostype} ...")
 
+#remove two out of three json gem so that it will not create conflit for azure gems
+if (ostype =~ /ubuntu-16.04/)
+  Chef::Log.info("Resolving json conflict")
+  `sudo gem uninstall json -v 2.0.2`
+  `sudo gem uninstall json -v 1.8.6`
+end
+
+
 #Symlinks for windows
 if ostype =~ /windows/
   ["etc","opt","var"].each do |dir_name|

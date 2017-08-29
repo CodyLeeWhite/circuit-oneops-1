@@ -1,3 +1,10 @@
+#Disable auto DNS registration
+lan_name = 'Ethernet'
+powershell_script 'Disable-DNSRegistration' do
+  code "((Get-WMIObject Win32_NetworkAdapter -filter \"NetConnectionID = '#{lan_name}'\").Getrelated('Win32_NetworkAdapterConfiguration')).SetDynamicDNSRegistration($false,$false)"
+  only_if "((Get-WMIObject Win32_NetworkAdapter -filter \"NetConnectionID = '#{lan_name}'\").Getrelated('Win32_NetworkAdapterConfiguration')).FullDNSRegistrationEnabled"
+end
+
 pw_file = '/etc/passwd'
 execute "mkpasswd -l -u oneops > #{pw_file}" do
   guard_interpreter :powershell_script

@@ -5,6 +5,8 @@ actions :run
 property :script, String, name_property: true
 property :arglist, String, default: ''
 property :timeout, Integer, default: 1500
+property :user, String, required: false
+property :password, String, required: false
 
 def default_interpreter_flags
   return [] if Chef::Platform.windows_nano_server?
@@ -50,15 +52,23 @@ action :run do
       cache_path: cache_path
     )
   end
- 
+
   #Execute Run-ElevatedScript to create a scheduled task that will run the wrapper script
   #wrap in ruby_block to make sure it runs after the wrapper script has been created
   ruby_block 'Run-ElevatedScript' do
     block do
       service_script = "#{cache_path}\\cookbooks\\windows-utils\\files\\windows\\Run-ElevatedScript.ps1" 
       service_cmd = "#{service_script} -ExeFile #{script_wrapper} -Timeout #{new_resource.timeout.to_s}"
+
+      if new_resource.user
+        service_cmd += " -User #{new_resource.user}"
+        if new_resource.password
+          service_cmd += " -Password #{Chef::ReservedNames::Win32::Crypto.encrypt(password)}"
+        end
+      end
+
       cmd = "powershell.exe " + [*default_interpreter_flags].join(" ") + " -File #{service_cmd}" 
-      rc = shell_out(cmd)
+      rc = shell_out(cmd, :timeout => new_resource.timeout)
 
       if !rc.stderr.nil? && rc.stderr.size > 0
         exit_with_error (rc.stderr)

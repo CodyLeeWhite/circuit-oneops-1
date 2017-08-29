@@ -8,6 +8,87 @@
 require 'resolv'
 require 'ipaddr'
 
+def get_ostype
+
+  ostype = 'linux'
+  os = node[:workorder][:payLoad][:DependsOn].select {|d| (d.ciClassName.split('.').last == 'Os')}
+  if node[:workorder][:payLoad].has_key?('os_payload') && node[:workorder][:payLoad][:os_payload].first[:ciAttributes][:ostype] =~ /windows/
+    ostype = 'windows'
+  elsif !os.empty? && os.first[:ciAttributes][:ostype] =~ /windows/
+    ostype = 'windows'
+  end
+
+  return ostype
+end #def get_ostype
+
+def get_dns_service
+  cloud_name = node[:workorder][:cloud][:ciName]
+  service_attrs = node[:workorder][:services][:dns][cloud_name][:ciAttributes]
+
+  #Find zone subservices satisfying the criteria
+  zone_services = []
+  node[:workorder][:services][:dns].each do |s|
+ 
+    if s.first =~ /#{cloud_name}\// && s.last[:ciAttributes].has_key?('criteria_type')
+
+      #platform check
+      if s.last[:ciAttributes][:criteria_type] == 'platform' && get_ostype == s.last[:ciAttributes][:criteria_value]
+        zone_services.push(s.last)
+      end
+    end
+  end
+
+  if zone_services.uniq.size > 1
+    Chef::Log.warn("Multiple zone subservices with satisfying criteria have been found. Using the default service...")
+  end
+
+  #One and only one satisfying zone subservice is found - use it instead of default dns service
+  if zone_services.uniq.size == 1
+    service_attrs = zone_services.first[:ciAttributes]
+  end
+
+  return service_attrs
+end #def get_dns_service
+
+def get_windows_domain_service
+  cloud_name = node[:workorder][:cloud][:ciName]
+  windows_domain = nil
+  if node[:workorder][:payLoad].has_key?('windowsdomain')
+    windows_domain = node[:workorder][:payLoad][:windowsdomain].first
+  elsif node[:workorder][:services].has_key?('windows-domain')
+    windows_domain = node[:workorder][:services]['windows-domain'][cloud_name]
+  end
+  return windows_domain
+end #def get_windows_domain_service
+
+def is_windows
+  return ( get_ostype == 'windows' && get_windows_domain_service )
+end #def is_windows
+
+def get_windows_domain (cloud_id)
+  #environment.assembly.cloud_id.zone
+  arr = [node[:workorder][:payLoad][:Environment][0][:ciName],node[:workorder][:payLoad][:Assembly][0][:ciName]]
+  if !cloud_id.nil? && !cloud_id.empty?
+    arr.push(cloud_id)
+  end
+  arr.push(get_windows_domain_service[:ciAttributes][:domain])
+  
+  return '.' + (arr.join('.')).downcase
+end #def get_windows_domain
+
+def get_customer_domain
+
+  if is_windows
+    customer_domain = get_windows_domain(get_dns_service[:cloud_dns_id])
+  else
+    customer_domain = node[:customer_domain].downcase
+  end
+
+  if customer_domain !~ /^\./
+    customer_domain = '.' + customer_domain
+  end
+  return customer_domain
+end #def get_customer_domain
 
 module Fqdn
 
@@ -212,6 +293,6 @@ module Fqdn
       end
       
     end
-            
+
   end
 end

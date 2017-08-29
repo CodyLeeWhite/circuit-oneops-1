@@ -7,6 +7,8 @@ version          '0.1.0'
 
 supports 'windows'
 depends 'iis'
+depends 'artifact'
+depends 'taskscheduler'
 
 grouping 'default',
   :access   => 'global',
@@ -103,6 +105,16 @@ attribute 'anonymous_authentication',
     :category  => '2.IIS Web site',
     :form     => {'field' => 'checkbox'},
     :order     => 6
+  }
+
+attribute 'iis_iusrs_group_service_accounts',
+  :description => 'Service accounts (iis_iusrs)',
+  :data_type   => 'array',
+  :default     => '[]',
+  :format      => {
+    :help      => 'Add Service Accounts to the IIS_IUSRS Group',
+    :category  => '2.IIS Web site',
+    :order     => 7
   }
 
 attribute 'enabled',
@@ -460,7 +472,7 @@ attribute 'requestfiltering_allow_double_escaping',
 
 attribute 'requestfiltering_allow_high_bit_characters',
   :description => 'Allow high bit characters',
-  :default     => 'true',
+  :default     => 'false',
   :format      => {
     :help      => 'If set to true, request filtering will allow non-ASCII characters in URLs.',
     :category  => '8.Request filtering',
@@ -515,6 +527,25 @@ attribute 'requestfiltering_file_extension_allow_unlisted',
     :order     => 7
   }
 
+attribute 'logs_retention_days',
+  :description => 'Logs retention in days',
+  :default     => '7',
+  :format      => {
+    :help      => 'Specify the number of days for IIS logs retention',
+    :category  => '9.IIS logs clean up',
+    :order     => 1
+  }
+
+attribute 'logs_cleanup_up_time',
+  :description => 'Logs cleanup time',
+  :default     => '02:00:00',
+  :required    => 'required',
+  :format      => {
+    :help      => 'Specify the time when clean up should trigger, Format HH:MM:SS, ex 23:30:00, 07:45:00',
+    :category  => '9.IIS logs clean up',
+    :pattern   => '^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$',
+    :order     => 2
+  }
+
 recipe 'app_pool_recycle', 'Recycle application pool'
 recipe 'iis_reset', 'Restart IIS'
-depends 'artifact'

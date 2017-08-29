@@ -157,3 +157,6 @@ iis_logging 'configure logging parameters' do
   period        site.period
   logTargetW3C  site.logtargetw3c.to_i
 end
+
+include_recipe "iis-website::add_user_iis_iusrs"
+include_recipe "iis-website::iis_logs_clean_up_task"

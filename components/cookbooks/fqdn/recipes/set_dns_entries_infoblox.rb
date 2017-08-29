@@ -97,7 +97,7 @@ end
 def set_is_hijackable_record(dns_name)
   
   # 'txt-' prefix due to cnames and txt records cannot exist for same name in infoblox 
-  record = { :name => 'txt-' + dns_name, :text => "hijackable_from_#{node.customer_domain}" }
+  record = { :name => 'txt-' + dns_name, :text => "hijackable_from_#{get_customer_domain}" }
   
   records = JSON.parse(node.infoblox_conn.request(:method=>:get,
     :path=>"/wapi/v1.0/record:txt", :body => JSON.dump(record) ).body)
@@ -121,9 +121,7 @@ end
 
 include_recipe "fqdn::get_infoblox_connection"
 
-cloud_name = node[:workorder][:cloud][:ciName]
-domain_name = node[:workorder][:services][:dns][cloud_name][:ciAttributes][:zone]
-view_attribute = node[:workorder][:services][:dns][cloud_name][:ciAttributes][:view_attr]
+view_attribute = get_dns_service[:view_attr]
 
 Chef::Log.debug("view_attribute: #{view_attribute}")
 
@@ -173,7 +171,7 @@ node[:entries].each do |entry|
       set_is_hijackable_record(dns_name)
     elsif node.workorder.rfcCi.ciBaseAttributes.has_key?('hijackable_full_aliases') &&
       node.workorder.rfcCi.ciBaseAttributes.hijackable_full_aliases == 'true'
-      delete_record('txt-' + dns_name,"hijackable_from_#{node.customer_domain}")
+      delete_record('txt-' + dns_name,"hijackable_from_#{get_customer_domain}")
     end
   end
     

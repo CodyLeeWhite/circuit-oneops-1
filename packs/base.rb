@@ -541,6 +541,67 @@ resource "fqdn",
              }
            ]
       }'
+    },
+    'os_payload' => {
+     'description' => 'os_payload',
+     'definition' => '{
+       "returnObject": false,
+       "returnRelation": false,
+       "relationName": "base.RealizedAs",
+       "direction": "to",
+       "targetClassName": "manifest.oneops.1.Fqdn",
+       "relations": [
+         { "returnObject": false,
+           "returnRelation": false,
+           "relationName": "manifest.DependsOn",
+           "direction": "from",
+           "targetClassName": "manifest.oneops.1.Compute",
+           "relations": [
+                 { "returnObject": true,
+                   "returnRelation": false,
+                   "relationName": "manifest.DependsOn",
+                   "direction": "to",
+                   "targetClassName": "manifest.oneops.1.Os"
+                 }
+            ]
+         }
+       ]
+     }'
+   },
+   'windowsdomain' => {
+       'description' => 'Windows-domain service',
+       'definition' => '{
+           "returnObject": false,
+           "returnRelation": false,
+           "relationName": "base.RealizedAs",
+           "direction": "to",
+           "targetClassName": "manifest.oneops.1.Fqdn",
+           "relations": [
+             { "returnObject": false,
+               "returnRelation": false,
+               "relationName": "manifest.Requires",
+               "direction": "to",
+               "targetClassName": "manifest.Platform",
+               "relations": [
+                 { "returnObject": false,
+                   "returnRelation": false,
+                   "relationName": "base.Consumes",
+                   "direction": "from",
+                   "targetClassName": "account.Cloud",
+                   "relations": [
+                     { "returnObject": true,
+                       "returnRelation": false,
+                       "relationName": "base.Provides",
+                       "relationAttrs":[{"attributeName":"service", "condition":"eq", "avalue":"windows-domain"}],
+                       "direction": "from",
+                       "targetClassName": "cloud.service.Windows-domain"
+                     }
+                   ]
+                 }
+               ]
+             }
+           ]
+      }'
     }
   }
 
@@ -720,10 +781,10 @@ resource "certificate",
                     'days_remaining'   => metric( :unit => 'count', :description => 'Days remaining to Expiry', :dstype => 'GAUGE')
                   },
                   :thresholds => {
-			  'cert-expiring-soon' => threshold('1m','avg','days_remaining',trigger('<=',30,1,1),reset('>',90,1,1))
+                    'cert-expiring-soon' => threshold('1m','avg','days_remaining',trigger('<=',30,1,1),reset('>',90,1,1))
                   }
                 }
-        }	 
+        }
 
 
 resource "hostname",
@@ -733,8 +794,44 @@ resource "hostname",
     :constraint => "0..1",
     :services => "dns",
     :help => "optional hostname dns entry"
+  },
+  :payloads => {
+   'windowsdomain' => {
+       'description' => 'Windows-domain service',
+       'definition' => '{
+           "returnObject": false,
+           "returnRelation": false,
+           "relationName": "base.RealizedAs",
+           "direction": "to",
+           "targetClassName": "manifest.oneops.1.Fqdn",
+           "relations": [
+             { "returnObject": false,
+               "returnRelation": false,
+               "relationName": "manifest.Requires",
+               "direction": "to",
+               "targetClassName": "manifest.Platform",
+               "relations": [
+                 { "returnObject": false,
+                   "returnRelation": false,
+                   "relationName": "base.Consumes",
+                   "direction": "from",
+                   "targetClassName": "account.Cloud",
+                   "relations": [
+                     { "returnObject": true,
+                       "returnRelation": false,
+                       "relationName": "base.Provides",
+                       "relationAttrs":[{"attributeName":"service", "condition":"eq", "avalue":"windows-domain"}],
+                       "direction": "from",
+                       "targetClassName": "cloud.service.Windows-domain"
+                     }
+                   ]
+                 }
+               ]
+             }
+           ]
+      }'
+    }
   }
-
 resource "sensuclient",
    :cookbook => "oneops.1.sensuclient",
    :design => true,
@@ -776,10 +873,10 @@ resource "firewall",
    }
  }
 
-resource "keywhiz-client",
-   :cookbook => "oneops.1.keywhiz-client",
+resource "secrets-client",
+   :cookbook => "oneops.1.secrets-client",
    :design => true,
-   :requires => {"constraint" => "0..1", 'services' => '*certificate,*keywhiz'}
+   :requires => {"constraint" => "0..1", 'services' => '*certificate,*secret'}
 
 resource "artifact",
   :cookbook => "oneops.1.artifact",
@@ -821,10 +918,10 @@ end
   { :from => 'sensuclient', :to => 'compute'  },
   { :from => 'library',     :to => 'os' },
   { :from => 'objectstore',  :to => 'compute'},
-  { :from => 'keywhiz-client',  :to => 'os'},
-  { :from => 'keywhiz-client',  :to => 'user'},
-  { :from => 'keywhiz-client',  :to => 'certificate'},
-  { :from => 'keywhiz-client',  :to => 'volume'},
+  { :from => 'secrets-client',  :to => 'os'},
+  { :from => 'secrets-client',  :to => 'user'},
+  { :from => 'secrets-client',  :to => 'certificate'},
+  { :from => 'secrets-client',  :to => 'volume'},
   { :from => 'objectstore',  :to => 'user'}
 ].each do |link|
   relation "#{link[:from]}::depends_on::#{link[:to]}",
@@ -872,7 +969,7 @@ end
 
 # managed_via
 [ 'os', 'telegraf', 'filebeat', 'user', 'job', 'file', 'volume', 'share', 'download', 'library', 'daemon', 
-  'certificate', 'logstash', 'sensuclient', 'artifact', 'objectstore', 'keywhiz-client'].each do |from|
+  'certificate', 'logstash', 'sensuclient', 'artifact', 'objectstore', 'secrets-client'].each do |from|
   relation "#{from}::managed_via::compute",
     :except => [ '_default' ],
     :relation_name => 'ManagedVia',

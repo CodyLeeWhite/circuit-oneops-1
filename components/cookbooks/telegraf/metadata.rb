@@ -17,7 +17,7 @@ attribute 'version',
   :format => {
     :important => true,
     :category => 'Global',
-    :help => 'Version of Telegraf',
+    :help => 'Version of Telegraf. Defaults to 1.2.1 for windows',
     :order => 1,
     :form => {'field' => 'select', 'options_for_select' => [['v0.13.2', '0.13.2'],['v1.0.0', '1.0.0']]}
   }
@@ -38,7 +38,7 @@ attribute 'enable_test',
   :default => "false",
   :format => {
       :category => 'Global',
-      :help => 'If enabled, then during add/update, [telegraf -test] must be run to validate the configuration..',
+      :help => 'If enabled, then during add/update, [telegraf -test] must be run to validate the configuration..ignored for windows',
       :order => 3,
       :form => {'field' => 'checkbox'}
   }
@@ -48,7 +48,7 @@ attribute 'run_as_root',
   :default => "false",
   :format => {
       :category => 'Global',
-      :help => 'Run Telegraf process as Root',
+      :help => 'Run Telegraf process as Root. Ignored for windows',
       :order => 4,
       :form => {'field' => 'checkbox'}
   }
@@ -58,7 +58,7 @@ attribute 'configdir',
   :required => 'required',
   :default => '/etc/telegraf/',
   :format => {
-    :help => 'Config file directory',
+    :help => 'Config file directory. Defaults to c:\program files\telegraf for windows',
     :category => 'Global',
     :order => 5
   }
@@ -79,5 +79,3 @@ recipe "start", "Start Telegraf"
 recipe "stop", "Stop Telegraf"
 recipe "restart", "Retart Telegraf"
 recipe "status", "Telegraf Status"
-
-
