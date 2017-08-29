@@ -1,5 +1,7 @@
 driver:
   name: vagrant
+  http_proxy: http://proxy.wal-mart.com:9080
+  https_proxy: http://proxy.wal-mart.com:9080
   customize:
     memory: 2048
     cpuexecutioncap: 70
