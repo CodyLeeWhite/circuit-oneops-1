@@ -44,6 +44,9 @@ wrapper.java.classpath.2=%ACTIVEMQ_HOME%/bin/activemq.jar
 # Java Library Path (location of Wrapper.DLL or libwrapper.so)
 wrapper.java.library.path.1=%ACTIVEMQ_HOME%/bin/linux-x86-64/
 
+# changes the boot priority of the wrapper to make sure that it starts after the machine is fully setup
+wrapper.daemon.update_rc = 91
+
 # Java Additional Parameters
 # note that n is the parameter number starting from 1.
 
