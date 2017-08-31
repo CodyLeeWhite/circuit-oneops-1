@@ -1,16 +1,20 @@
 driver:
   name: vagrant
-  http_proxy: http://proxy.wal-mart.com:9080
-  https_proxy: http://proxy.wal-mart.com:9080
-  no_proxy: .local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com
+  driver_config:
+    http_proxy: "http://proxy.wal-mart.com:9080"
+    https_proxy: "http://proxy.wal-mart.com:9080"
+    no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
   customize:
     memory: 2048
     cpuexecutioncap: 70
 platforms:
   -
-    name: centos-6.8
+    name: centos-7.2
 
 provisioner:
+  http_proxy: "http://proxy.wal-mart.com:9080"
+  https_proxy: "http://proxy.wal-mart.com:9080"
+  no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
   name: chef_solo
   script: "bootstrap.sh"
   cookbook_files_glob: "**/*"
@@ -21,6 +25,41 @@ provisioner:
     log_level: :info
 
 suites:
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: Userbin6
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/OracleJre6/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "oracle"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jre"
+        sysdefault: "true"
+        version: "6"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+#------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre6
     run_list:
       - recipe[kitchen-test-helper]
@@ -48,6 +87,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre7
     run_list:
@@ -76,6 +121,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre8
     run_list:
@@ -104,6 +155,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk6
     run_list:
@@ -132,6 +189,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk7
     run_list:
@@ -160,6 +223,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk8
     run_list:
@@ -188,6 +257,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleServerJre7
     run_list:
@@ -216,6 +291,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleServerJre8
     run_list:
@@ -244,6 +325,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre6
     run_list:
@@ -272,6 +359,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre7
     run_list:
@@ -300,6 +393,12 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre8
     run_list:
@@ -328,6 +427,51 @@ suites:
         uversion: ""
         enable_jce: "false"
         binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJdk6
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/openJdkJre8/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            prod-dfw1:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "prod-dfw1"
+      user:
+      app_name: "java"
+      java:
+        flavor: "openjdk"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "6"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+        http_proxy: "http://proxy.wal-mart.com:9080"
+        https_proxy: "http://proxy.wal-mart.com:9080"
+        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
 # Kitchen yaml is very picky about the file path and name of your serverspec test file
 # The path must match [COOKBOOK]/test/integration/[SUITES]/serverspec/*_spec.rb
 # Globbing pattern to match files is "serverspec/*/*_spec.rb"
+
+
+#todo
+#add openjdk jdk 6,7,8 and serverjre 6,7,8
+#add download-java tests
