@@ -54,4 +54,5 @@ node.set[:env] = env
 ci_id = node.workorder.rfcCi.ciId
 node.set[:common_name] = "keysync-" + ci_id.to_s + "." + node[:workorder][:cloud][:ciName] + "." + mgmt_domain
 node.set[:print_cert_bom_attributes] = false # this is so that the cert bom RESULT* attributes are not printed
+node.set[:secrets_client_service_name] = 'keysync'
 

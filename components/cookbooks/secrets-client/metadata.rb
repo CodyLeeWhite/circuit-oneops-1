@@ -42,3 +42,6 @@ attribute 'group',
               :order => 3
           }
 
+recipe 'stop', 'Stop'
+recipe 'restart', 'Restart'
+
