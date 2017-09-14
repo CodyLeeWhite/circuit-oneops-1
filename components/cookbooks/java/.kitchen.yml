@@ -1,20 +1,30 @@
+#
+# To use proxy fill in proxy variables in each suit and uncomment them
+#
+# The first suit can be run on open network out of box, but all others
+# require a nexus url be placed in mirror attribute. To quickly add nexus
+# url find and replace https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/
+#
+#
 driver:
   name: vagrant
   driver_config:
-    http_proxy: "http://proxy.wal-mart.com:9080"
-    https_proxy: "http://proxy.wal-mart.com:9080"
-    no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+  #  http_proxy: "http://myproxy.com:port"
+  #  https_proxy: "http://myproxy.com:port"
+  #  no_proxy: ".list,.ofdomains.com"
   customize:
     memory: 2048
     cpuexecutioncap: 70
 platforms:
-  -
-    name: centos-7.2
+  - name: centos-7.2
+    driver:
+      vagrantfile_erb: Vagrantfile.erb
+
 
 provisioner:
-  http_proxy: "http://proxy.wal-mart.com:9080"
-  https_proxy: "http://proxy.wal-mart.com:9080"
-  no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+#  http_proxy: "http://myproxy.com:port"
+#  https_proxy: "http://myproxy.com:port"
+#  no_proxy: ".list,.ofdomains.com"
   name: chef_solo
   script: "bootstrap.sh"
   cookbook_files_glob: "**/*"
@@ -26,39 +36,47 @@ provisioner:
 
 suites:
 #------------------------------------------------------------------------------------------------------------------------------------------------------
-  - name: Userbin6
+  - name: Userbin8
     run_list:
       - recipe[kitchen-test-helper]
+      - recipe[download::add]
       - recipe[java::add]
     veridier:
       inspec_tests:
-        - test/integration/OracleJre6/serverspec/
+        - test/integration/Userbin8/serverspec/
     attributes:
       workorder:
+        rfcCi:
+          ciName: ""
+          ciAttributes:
+            source: "http://hg.openjdk.java.net/jdk8u/jdk8u/archive/jdk8u141-b15.tar.bz2"
+            headers: "{}"
+            path: "/tmp/jdk8u141-b15.tar.bz2"
+            post_download_exec_cmd: "tar xvjf /tmp/jdk8u141-b15.tar.bz2"
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
-        flavor: "oracle"
+        flavor: "openjdk"
         install_dir: "/usr/lib/jvm"
-        jrejdk: "jre"
+        jrejdk: "jdk"
         sysdefault: "true"
-        version: "6"
+        version: "8"
         uversion: ""
         enable_jce: "false"
-        binpath: ""
+        binpath: "/tmp/jdk8u141-b15.bin"
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre6
     run_list:
@@ -71,11 +89,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -90,9 +108,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre7
     run_list:
@@ -105,11 +123,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -124,9 +142,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJre8
     run_list:
@@ -139,11 +157,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -158,9 +176,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk6
     run_list:
@@ -173,11 +191,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -192,9 +210,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk7
     run_list:
@@ -207,11 +225,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -226,9 +244,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleJdk8
     run_list:
@@ -241,11 +259,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -260,9 +278,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleServerJre7
     run_list:
@@ -275,11 +293,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -294,9 +312,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: OracleServerJre8
     run_list:
@@ -309,11 +327,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -328,9 +346,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre6
     run_list:
@@ -343,11 +361,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -362,9 +380,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre7
     run_list:
@@ -377,11 +395,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -396,9 +414,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJre8
     run_list:
@@ -411,11 +429,11 @@ suites:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -430,9 +448,9 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 #------------------------------------------------------------------------------------------------------------------------------------------------------
   - name: openJdkJdk6
     run_list:
@@ -440,16 +458,16 @@ suites:
       - recipe[java::add]
     veridier:
       inspec_tests:
-        - test/integration/openJdkJre8/serverspec/
+        - test/integration/openJdkJdk6/serverspec/
     attributes:
       workorder:
         services:
           mirror:
-            prod-dfw1:
+            some-cloud:
               ciAttributes:
-                mirrors: "{\n              \"jdk\":\"https://nexus.prod.walmart.com/nexus/content/groups/public/$flavor/$jrejdk/$version/\"\n}"
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
         cloud:
-          ciName: "prod-dfw1"
+          ciName: "some-cloud"
       user:
       app_name: "java"
       java:
@@ -464,14 +482,77 @@ suites:
     chef_client:
       config:
         log_level: ":debug"
-        http_proxy: "http://proxy.wal-mart.com:9080"
-        https_proxy: "http://proxy.wal-mart.com:9080"
-        no_proxy: ".local,.wal-mart.com,.wamnetNAD,.walmart.com,.wmlink,.walmartlabs.com"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJdk7
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/openJdkJdk7/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            some-cloud:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "some-cloud"
+      user:
+      app_name: "java"
+      java:
+        flavor: "openjdk"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "7"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: openJdkJdk8
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[java::add]
+    veridier:
+      inspec_tests:
+        - test/integration/openJdkJdk8/serverspec/
+    attributes:
+      workorder:
+        services:
+          mirror:
+            some-cloud:
+              ciAttributes:
+                mirrors: "{\n              \"jdk\":\"https://nexus.exsample.com/nexus/somepath/$flavor/$jrejdk/$version/\"\n}"
+        cloud:
+          ciName: "some-cloud"
+      user:
+      app_name: "java"
+      java:
+        flavor: "openjdk"
+        install_dir: "/usr/lib/jvm"
+        jrejdk: "jdk"
+        sysdefault: "true"
+        version: "8"
+        uversion: ""
+        enable_jce: "false"
+        binpath: ""
+    chef_client:
+      config:
+        log_level: ":debug"
+      #  http_proxy: "http://myproxy.com:port"
+      #  https_proxy: "http://myproxy.com:port"
+      #  no_proxy: ".list,.ofdomains.com"
 # Kitchen yaml is very picky about the file path and name of your serverspec test file
 # The path must match [COOKBOOK]/test/integration/[SUITES]/serverspec/*_spec.rb
 # Globbing pattern to match files is "serverspec/*/*_spec.rb"
-
-
-#todo
-#add openjdk jdk 6,7,8 and serverjre 6,7,8
-#add download-java tests

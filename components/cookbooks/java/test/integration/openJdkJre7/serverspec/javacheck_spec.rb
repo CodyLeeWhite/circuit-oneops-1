@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe command('java -version | grep OpenJDK') do
+describe command('java -version 2>&1 | grep OpenJDK') do
   its(:exit_status) { should eq 0 }
 end
-describe command('java -version | grep 1.6') do
+describe command('java -version 2>&1 | grep 1.7') do
   its(:exit_status) { should eq 0 }
 end
 describe file($node['java']['install_dir']) do
