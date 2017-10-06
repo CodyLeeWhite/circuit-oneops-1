@@ -1,0 +1,50 @@
+driver:
+  name: vagrant
+  provison: true
+  customize:
+    memory: 2048
+    cpuexecutioncap: 70
+platforms:
+  - name: centos-7.2
+    driver:
+      username: root
+      password: vagrant
+provisioner:
+  name: chef_solo
+  script: "bootstrap.sh"
+  cookbook_files_glob: "**/*"
+  require_chef_omnibus: 11.18.12
+  solo_rb:
+    verify_api_cert: true
+    ssl_verify_mode: :verify_peer
+    log_level: :debug
+suites:
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: Userbin8
+    sudo: true
+    run_list:
+      - recipe[kitchen-test-helper]
+      - recipe[compute::base]
+    veridier:
+      inspec_tests:
+        - test/integration/Userbin8/serverspec/
+    attributes:
+      workorder:
+        rfcCi:
+          ciClassName: "stuff.oneops.1.stuff"
+        payLoad:
+          stuff:
+        cloud:
+          ciName: "somecloud"
+        services:
+          compute:
+            somecloud:
+              ciAttributes:
+                env_vars: "{}"
+                stuff:
+              ciClassName: "stuff.vagrant"
+      ip: "127.0.0.1:22"
+      ostype: "centos"
+      rsync_cmd: "echo \" testing123 \""
+      ssh_cmd: "root@"
+      ssh_interactive_cmd: 'eval "/root/"'

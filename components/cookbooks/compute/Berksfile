@@ -1,0 +1,20 @@
+source "http://localhost:65535/"
+# Did not want to link the berks file to outside link https://supermarket.chef.io so I set it to listen
+# to random unused port.
+
+metadata
+
+cookbook "simple_iptables", github: "oneops/oneops", branch: "master", rel: "oneops-admin/lib/shared/cookbooks/simple_iptables"
+cookbook "security", github: "oneops/oneops", branch: "master", rel: "oneops-admin/lib/shared/cookbooks/security"
+cookbook "shared", github: "oneops/oneops", branch: "master", rel: "oneops-admin/lib/shared/cookbooks/shared"
+cookbook "kitchen-test-helper", "~> 2.0.0", git: "https://github.com/kbvincent/kitchen-test-helper", branch: "master"
+
+cookbook "azure", path: "../azure"
+cookbook "azure_base", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/azure_base"
+cookbook "azuredatadisk", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/azuredatadisk"
+cookbook "azuredns", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/azuredns"
+cookbook "azuresecgroup", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/azuresecgroup"
+
+cookbook "fqdn", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/fqdn"
+cookbook "netscaler", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/netscaler"
+cookbook "os", github: "oneops/circuit-oneops-1", branch: "master", rel: "components/cookbooks/os"
