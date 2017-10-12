@@ -1,0 +1,47 @@
+<%
+    http_proxy = ENV['http_proxy']
+    https_proxy = ENV['https_proxy']
+    no_proxy = ENV['no_proxy']
+%>
+driver:
+  name: vagrant
+  provision: true
+  cachier: true
+  vagrantfiles:
+    - Vagrantfile.rb
+  driver_config:
+    http_proxy: <%= http_proxy %>
+    https_proxy: <%= https_proxy %>
+    no_proxy: <%= no_proxy %>
+platforms:
+  - name: centos-7.2
+    http_proxy: <%= http_proxy %>
+    https_proxy: <%= https_proxy %>
+    no_proxy: <%= no_proxy %>
+provisioner:
+  name: chef_solo
+  script: "bootstrap.sh"
+  cookbook_files_glob: "**/*"
+  require_chef_omnibus: 11.18.12
+  solo_rb:
+    verify_api_cert: true
+    ssl_verify_mode: :verify_peer
+    log_level: :debug
+  http_proxy: <%= http_proxy %>
+  https_proxy: <%= https_proxy %>
+  no_proxy: <%= no_proxy %>
+suites:
+#------------------------------------------------------------------------------------------------------------------------------------------------------
+  - name: Userbin8
+    run_list:
+      - recipe[kitchen-test-helper]
+#      - recipe[download::add]
+    veridier:
+      inspec_tests:
+        - test/integration/Userbin8/serverspec/
+    attributes:
+      chef-client:
+        config:
+          http_proxy: <%= http_proxy %>
+          https_proxy: <%= https_proxy %>
+          no_proxy: <%= no_proxy %>
