@@ -231,7 +231,7 @@ if ip_type == 'public'
   end
 end
 if !compute_service[:ostype].include?("windows")
-  include_recipe "compute::ssh_port_wait"
+  include_recipe "azure::ssh_port_wait"
 end  
 
 rfcCi = node["workorder"]["rfcCi"]
