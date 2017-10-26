@@ -1,3 +1,4 @@
+`sudo gem install json -v 1.8.6`
 require 'serverspec'
 require 'pathname'
 require 'json'

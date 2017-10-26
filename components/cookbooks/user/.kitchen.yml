@@ -1,15 +1,25 @@
----
+<%
+  `cat #{ENV['WORKORDER']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["SecuredBy"][0]["ciAttributes"]["private"]' > /tmp/key`
+  computeip = `cat #{ENV['WORKORDER']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["ManagedVia"][0]["ciAttributes"]["private_ip"]'`
+%>
 driver:
-  name: vagrant
+  name: proxy
+  host: <%= computeip %>
+  reset_command: "exit 0"
+  port: 22
+  username: oneops
+  ssh_key: /tmp/key
 provisioner:
-  name: chef_solo
+  require_chef_omnibus: false
+  chef_solo_path: /usr/local/bin/chef-solo
+  script: "bootstrap.sh"
 platforms:
   - name: centos-7.2
 suites:
   - name: add
     run_list:
-      - recipe[kitchen-test-helper]
-      - recipe[user::add]
+#      - recipe[kitchen-test-helper]
+#      - recipe[user::add]
     attributes:
       user:
         username: 'app'
@@ -18,9 +28,9 @@ suites:
         authorized_keys: '["changeme"]'
   - name: delete
     run_list:
-      - recipe[kitchen-test-helper]
-      - recipe[User::add]
-      - recipe[User::delete]
+#      - recipe[kitchen-test-helper]
+#      - recipe[User::add]
+#      - recipe[User::delete]
     attributes:
       user:
         username: 'app'
