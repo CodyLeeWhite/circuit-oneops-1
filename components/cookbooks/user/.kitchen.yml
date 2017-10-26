@@ -1,6 +1,6 @@
 <%
-  `cat #{ENV['WORKORDER']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["SecuredBy"][0]["ciAttributes"]["private"]' > /tmp/key`
-  computeip = `cat #{ENV['WORKORDER']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["ManagedVia"][0]["ciAttributes"]["private_ip"]'`
+  `cat #{ENV['INDUCTOR_WORKORDER_PATH']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["SecuredBy"][0]["ciAttributes"]["private"]' > /tmp/key`
+  computeip = `cat #{ENV['INDUCTOR_WORKORDER_PATH']}|python -c 'import sys,json; print json.load(sys.stdin)["workorder"]["payLoad"]["ManagedVia"][0]["ciAttributes"]["private_ip"]'`
 %>
 driver:
   name: proxy
@@ -9,6 +9,7 @@ driver:
   port: 22
   username: oneops
   ssh_key: /tmp/key
+  ftp_proxy: <%= ENV['CLIENT_WORKORDER_PATH'] %>
 provisioner:
   require_chef_omnibus: false
   chef_solo_path: /usr/local/bin/chef-solo
@@ -21,11 +22,6 @@ suites:
 #      - recipe[kitchen-test-helper]
 #      - recipe[user::add]
     attributes:
-      user:
-        username: 'app'
-        login_shell: '/bin/bash'
-        group: '["app"]'
-        authorized_keys: '["changeme"]'
   - name: delete
     run_list:
 #      - recipe[kitchen-test-helper]
