@@ -37,10 +37,14 @@ end
 install_dir = node.java.install_dir
 sys_default = node.java.sysdefault
 
-# Trim the binpath whitespace
+# Trim the binpath and uversion whitespace
 node.java.binpath.strip!
+node.java.uversion.strip!
 
-if node.java.binpath.empty?
+# Check to see if fast image applys
+preDown = isPredownloaded?
+
+if node.java.binpath.empty? && !preDown
   # Automatically download the package from mirror location
   base_url, file_name, extract_dir = get_java_pkg_location
   binpath = "/usr/src/#{file_name}"
@@ -56,6 +60,20 @@ if node.java.binpath.empty?
     source "#{base_url}/#{file_name}"
   end
 
+elsif preDown && node.java.binpath.empty?
+  # Predownloaded java binary package
+  case version
+    when 6
+      uversion = 161
+    when 7
+      uversion = 79
+    when 8
+      uversion = 144
+    else
+      exit_with_err "preDownloaded java is only supported on jdk 6-8"
+  end
+  binpath = "/root/runtimes/java/jdk1.#{version}.0_#{uversion}"
+  extract_dir = "/jdk1.#{version}.0_#{uversion}"
 else
   # User provided binary package
   binpath = node.java.binpath
@@ -78,7 +96,7 @@ end
 
 # JDK installation
 case
-  when version > 6
+  when version > 6 && binpath != "/root/runtimes/java/jdk1.#{version}.0_#{uversion}"
     ruby_block "Install Oracle #{pkg} #{version}" do
       block do
         Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
@@ -89,7 +107,7 @@ case
       # Always install the JDK/JRE
       # not_if "test -d #{jpath}"
     end
-  when version == 6
+  when version == 6 && binpath != "/root/runtimes/java/jdk1.#{version}.0_#{uversion}"
     if !::File.exist?(jpath)
       ruby_block "Install Oracle #{pkg} #{version}" do
         block do
@@ -101,6 +119,15 @@ case
       end
     else
       Chef::Log.warn "#{jpath} exists. Skipping Oracle #{pkg} #{version} installtion."
+    end
+  when binpath == "/root/runtimes/java/jdk1.#{version}.0_#{uversion}"
+    ruby_block "Install Oracle #{pkg} #{version}" do
+      block do
+        Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+        shell_out!("cp -r #{binpath} #{install_dir}/#{extract_dir}",
+                   :cwd => "#{install_dir}",
+                   :live_stream => Chef::Log::logger)
+      end
     end
 end
 

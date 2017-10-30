@@ -264,6 +264,48 @@ module Java
       Chef::Application.fatal!(msg)
     end
 
-  end
+    # Checks if version and uversion match one of the pre-installed
+    #
+    # @returns : boolean
+    #
+    def isPredownloadedVersion?()
+      returnCheck = false
 
+      if !node.java.uversion.empty? && node.java.version.to_i != 9
+        case node.java.version.to_i
+          when 6
+            returnCheck = node.java.uversion.to_i == 161 ? true : false
+          when 7
+            returnCheck = node.java.uversion.to_i == 79 ? true : false
+          when 8
+            returnCheck = node.java.uversion.to_i == 144 ? true : false
+          else
+            returnCheck = false
+        end
+      elsif node.java.uversion.empty? && node.java.version.to_i != 9
+        returnCheck = true
+      end
+
+      returnCheck
+    end
+
+    # Checks if user chosen version is on fast deploy
+    #
+    # @returns : boolean
+    #
+    def isPredownloaded?()
+      returnCheck = false
+      # If jdk and version and uversion and on fast deploy image
+      if node.java.jrejdk == 'jdk'
+        if File.directory?("/root/runtimes")
+          if isPredownloadedVersion?
+            returnCheck = true
+          end
+        end
+      end
+      returnCheck
+    end
+
+
+  end
 end
