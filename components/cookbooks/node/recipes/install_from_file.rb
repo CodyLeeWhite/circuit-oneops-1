@@ -9,17 +9,22 @@ runtimes = YAML.load_file("/etc/oneops-tools-inventory.yml")
 runtime_path = runtimes["nodejs_#{node['nodejs']['version']}"]
 Chef::Log.info("Runtime path is #{runtime_path}")
 
+package_stub = "node-v#{node['nodejs']['version']}-linux-x64"
+Chef::Log.info("OneOps CI package_stub : #{package_stub}")
+
 destination_dir = node['nodejs']['dir']
 Chef::Log.info("OneOps CI destination_dir : #{destination_dir}")
 
 execute "install package to system" do
   command <<-EOF
-            ln -sf #{runtime_path}/bin/* #{destination_dir}/bin/
-            ln -sf #{runtime_path}/share/* #{destination_dir}/share/
-            ln -sf #{runtime_path}/lib/* #{destination_dir}/lib/
+            tar xf #{runtime_path} \
+            --strip-components=1  --no-same-owner \
+            -C #{destination_dir} \
+            #{package_stub}/bin \
+            #{package_stub}/lib \
+            #{package_stub}/share
   EOF
 end
-
 
 execute "set npm registry" do
   command "#{node['nodejs']['dir']}/bin/npm config set registry #{node['nodejs']['npm_src_url']}"
