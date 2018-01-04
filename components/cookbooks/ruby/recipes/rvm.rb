@@ -15,7 +15,10 @@
 version = node[:ruby][:version]
 
 package "libyaml"
-execute "yum groupinstall -y 'development tools'"
+repolist = `yum repolist`
+if !(repolist.to_s =~ /walmart/i || repolist.to_s =~ /wal-mart/i)
+  execute "yum groupinstall -y 'development tools'"
+end
 
 # setup sources
 cloud_name = node[:workorder][:cloud][:ciName]
