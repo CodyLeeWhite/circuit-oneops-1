@@ -109,3 +109,10 @@ gem install #{gem} #{opts} --no-rdoc --no-ri
 EOH
   end
 end
+
+bash "create oneops user eception" do
+    code <<-EOH
+sed -i '1 s/^/if [ \"$(whoami)\" != \"oneops\" ]; then\\n/' /etc/profile.d/rvm.sh
+echo 'fi' >> /etc/profile.d/rvm.sh
+EOH
+end
