@@ -16,9 +16,7 @@ version = node[:ruby][:version]
 
 package "libyaml"
 repolist = `yum repolist`
-# if !(repolist.to_s =~ /walmart/i || repolist.to_s =~ /wal-mart/i)
-#   execute "yum groupinstall -y 'development tools'"
-# end
+
 execute "yum grouplist 'development tools' 2>&1 | grep -q 'no installed groups file' && echo 'SKIPPPING....'|| yum groupinstall -y 'development tools'"
 
 # setup sources
