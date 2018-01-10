@@ -107,10 +107,26 @@ file '/opt/oneops/domain' do
   group 'root'
   content "#{customer_domain}\n"
 end
+case node.platform
+  when "redhat","centos"
+    directory '/etc/bind/' do
+      owner 'root'
+      group 'root'
+      mode '0755'
+      recursive true
+      action :create
+    end
+    directory '/var/cache/bind' do
+      owner 'root'
+      group 'root'
+      mode '0755'
+      recursive true
+      action :create
+    end
+end
 
 ruby_block 'setup bind and dhclient' do
   block do
-
     Chef::Log.info("*** SETUP BIND ***")
 
     given_nameserver =(`cat /etc/resolv.conf |grep -v 127  | grep -v '^#' | grep nameserver | awk '{print $2}'`.split("\n")).join(";")
@@ -146,8 +162,6 @@ ruby_block 'setup bind and dhclient' do
       # commented out to prevent adding authoritative servers for the zone
       # named_conf += 'include "/etc/bind/named.conf.local";'+"\n"
       ::File.open("/etc/named.conf", 'w') {|f| f.write(named_conf) }
-      `mkdir -p /etc/bind/`
-      `mkdir -p /var/cache/bind`
     end
 
     options_config =  "options {\n"

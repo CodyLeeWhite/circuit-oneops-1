@@ -163,7 +163,7 @@ fi
 set -e
 gem install bundler --bindir /usr/bin --no-ri --no-rdoc
 
-mkdir -p /opt/oneops
+mkdir -p -m 755 /opt/oneops
 echo "$rubygems_proxy" > /opt/oneops/rubygems_proxy
 
 set +e
@@ -245,7 +245,9 @@ if [ "$me" == "idcuser" ] ; then
   openssl rand -base64 12 | passwd oneops --stdin
 fi
 
-mkdir -p /opt/oneops/workorder /etc/nagios/conf.d /var/log/nagios
+mkdir -p -m 755 /opt/oneops/workorder
+mkdir -p -m 750 /etc/nagios/conf.d
+mkdir -p -m 750 /var/log/nagios
 rsync -a $home_dir/circuit-oneops-1 /home/oneops/
 rsync -a $home_dir/shared /home/oneops/
 chown -R oneops:oneops /home/oneops /opt/oneops

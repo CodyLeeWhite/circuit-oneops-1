@@ -106,7 +106,13 @@ end
 
 #Perform non-windows recipes
 # common plugins dir that components put their check scripts
-execute "mkdir -p /opt/nagios/libexec"
+directory '/opt/nagios/libexec' do
+  owner 'root'
+  group 'root'
+  mode '0755'
+  recursive true
+  action :create
+end
 
 include_recipe "os::packages"
 include_recipe "os::network"
