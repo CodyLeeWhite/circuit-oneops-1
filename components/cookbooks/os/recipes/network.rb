@@ -78,22 +78,17 @@ ruby_block 'update /etc/hosts' do
 end
 
 # bind install
-bind_package_name = value_for_platform(
-  [ "debian","ubuntu" ] => {"default" => "bind9"},
-  ["fedora","redhat","centos","suse"] => {"default" => "bind" },
-  "default" => "named"
-)
-
-package bind_package_name do
-    action :install
+package 'Install bind' do
+  case node['platform']
+    when 'redhat', 'centos', 'fedora', 'suse'
+      package_name 'bind'
+    when 'ubuntu', 'debian'
+      package_name 'bind9'
+    else
+      package_name 'named'
+  end
+  action :install
 end
-
-# redhad package is bind but the service resource next uses named
-bind_package_name = value_for_platform(
-  [ "debian","ubuntu" ] => {"default" => "bind9"},
-  "default" => "named"
-)
-
 
 customer_domain = node["customer_domain"]
 if customer_domain =~ /^\./
@@ -106,23 +101,6 @@ file '/opt/oneops/domain' do
   owner 'root'
   group 'root'
   content "#{customer_domain}\n"
-end
-case node.platform
-  when "redhat","centos"
-    directory '/etc/bind/' do
-      owner 'root'
-      group 'root'
-      mode '0755'
-      recursive true
-      action :create
-    end
-    directory '/var/cache/bind' do
-      owner 'root'
-      group 'root'
-      mode '0755'
-      recursive true
-      action :create
-    end
 end
 
 ruby_block 'setup bind and dhclient' do
@@ -162,6 +140,24 @@ ruby_block 'setup bind and dhclient' do
       # commented out to prevent adding authoritative servers for the zone
       # named_conf += 'include "/etc/bind/named.conf.local";'+"\n"
       ::File.open("/etc/named.conf", 'w') {|f| f.write(named_conf) }
+
+      Chef::Log.info('creating directory /etc/bind/')
+      make_bind = Mixlib::ShellOut.new("mkdir -p -m 755 /etc/bind/")
+      make_bind.run_command
+      if !make_bind.stderr.empty?
+        Chef::Log.error("Error creating /var/cache/bind #{make_bind.stderr}")
+        make_bind.error!
+      end
+
+
+      Chef::Log.info('creating directory /var/cache/bind')
+      make_bind_cache = Mixlib::ShellOut.new("mkdir -p -m 755 /var/cache/bind")
+      make_bind_cache.run_command
+      if !make_bind_cache.stderr.empty?
+        Chef::Log.error("Error creating /var/cache/bind #{make_bind_cache.stderr}")
+        make_bind_cache.error!
+      end
+
     end
 
     options_config =  "options {\n"
@@ -335,7 +331,15 @@ ruby_block 'setup bind and dhclient' do
 end
 
 
-service bind_package_name do
+service 'Starting bind service' do
+  case node['platform']
+    when 'redhat', 'centos', 'fedora', 'suse'
+      service_name 'named'
+    when 'ubuntu', 'debian'
+      service_name 'bind9'
+    else
+      service_name 'named'
+  end
   supports :restart => true
   action [:enable, :restart]
 end

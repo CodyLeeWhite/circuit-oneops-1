@@ -53,7 +53,7 @@ if provider =~ /openstack/i
     it "Environment should be #{nsPathParts[3]}" do
       expect(server_metadata['environment']).to be == nsPathParts[3]
     end
-    it "Assembly should be #{nsPathParts[3]}" do
+    it "Assembly should be #{nsPathParts[2]}" do
       expect(server_metadata['assembly']).to be == nsPathParts[2]
     end
     it "Instance should be #{rfcCi['ciId']}" do

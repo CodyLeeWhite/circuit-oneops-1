@@ -1,5 +1,7 @@
-require "/home/oneops/circuit-oneops-1/components/cookbooks/os/libraries/util.rb"
-
+# cookbook util
+require '/home/oneops/circuit-oneops-1/components/cookbooks/os/libraries/util'
+# Testing util
+require '/home/oneops/circuit-oneops-1/components/cookbooks/os/test/integration/library/util'
 
 rfcCi = $node['workorder']['rfcCi']
 host_name = "#{$node['workorder']['box']['ciName']}-#{$node['workorder']['cloud']['ciId']}-#{$node['workorder']['rfcCi']['ciName'].split('-').last.to_i.to_s}-#{rfcCi['ciId']}"
@@ -55,15 +57,49 @@ host_cmd = `hostname -f`
 describe file('/etc/cloud/cloud.cfg') do
   its(:content) { should match /preserve_hostname: true/ }
 end
+
 describe file('/etc/cloud/cloud.cfg.d/99_hostname.cfg') do
   its(:content) { should eq "hostname: #{host_name.downcase}\nfqdn: #{fqdn_name.downcase}\n" }
 end
+
 describe file('/opt/oneops/domain') do
   its(:content) { should eq "#{$node['customer_domain']}\n" }
 end
+
 describe "FQDN" do
   it "Should equal #{fqdn_name.downcase}" do
     expect(host_cmd.downcase.strip).to be == fqdn_name.downcase.strip
+  end
+end
+
+describe file('/etc/bind/named.conf.options') do
+  its(:content) { should eq get_options_config_string }
+end
+
+describe file('/etc/bind/named.conf.local') do
+  its(:content) { should eq get_zone_config_string($node) }
+end
+
+describe file('/etc/dhcp/dhclient.conf') do
+  its(:content) { should eq get_dhcp_config_string($node) }
+end
+
+describe command('ls -1 /etc/dhcp/*conf|grep -v dhclient.conf') do
+  its(:exit_status) { should eq 1 }
+end
+
+describe service('named') do
+  it { should be_enabled }
+end
+
+attrs = $node[:workorder][:rfcCi][:ciAttributes]
+if attrs[:dhclient] == 'false'
+  describe file('/etc/init.d/killdhclient') do
+    it { should exist }
+  end
+else
+  describe file('/etc/init.d/killdhclient') do
+    it { should_not exist }
   end
 end
 #--- network.rb
