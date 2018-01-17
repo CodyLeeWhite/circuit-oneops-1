@@ -73,8 +73,26 @@ ruby_block 'update /etc/hosts' do
     File.open("/tmp/etc_hosts", "w") do |file|
         file.puts mod_host
     end
-    `cat /tmp/etc_hosts > /etc/hosts`
- end
+
+    Chef::Log.info('setting /etc/hosts')
+    change_host = Mixlib::ShellOut.new("cat /tmp/etc_hosts > /etc/hosts")
+    change_host.run_command
+    Chef::Log.debug("Mod /etc/hosts stdout: #{change_host.stdout}")
+    if !change_host.stderr.empty?
+      Chef::Log.error("Mod /etc/hosts stderr: #{change_host.stderr}")
+      change_host.error!
+    end
+
+    # For some computes network service needs to be restarted after changing hosts
+    Chef::Log.info('Restarting network')
+    restart_host = Mixlib::ShellOut.new("service network restart")
+    restart_host.run_command
+    Chef::Log.debug("Network service restart stdout: #{restart_host.stdout}")
+    if !restart_host.stderr.empty?
+      Chef::Log.error("Network service restart stderr: #{restart_host.stderr}")
+      restart_host.error!
+    end
+  end
 end
 
 # bind install
