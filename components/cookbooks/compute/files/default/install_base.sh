@@ -33,11 +33,7 @@ set_env()
 
 set_env $@
 
-
-
-
 set -e
-
 if ! [ -e /etc/ssh/ssh_host_dsa_key ] ; then
   echo "generating host ssh keys"
   /usr/bin/ssh-keygen -A
@@ -245,10 +241,19 @@ if [ "$me" == "idcuser" ] ; then
   openssl rand -base64 12 | passwd oneops --stdin
 fi
 
-mkdir -p -m 755 /opt/oneops/workorder
-mkdir -p -m 750 /etc/nagios/conf.d
-mkdir -p -m 750 /var/log/nagios
 rsync -a $home_dir/circuit-oneops-1 /home/oneops/
 rsync -a $home_dir/shared /home/oneops/
-chown -R oneops:oneops /home/oneops /opt/oneops
-chown -R nagios:nagios /etc/nagios /var/log/nagios
+mkdir -p -m 750 /etc/nagios/conf.d
+mkdir -p -m 755 /opt/oneops/workorder
+mkdir -p -m 750 /var/log/nagios
+
+# On touch update; chown will break nagios if monitor cookbook does not run.
+# Still need to chown a few directories
+owner=$( ls -ld /opt/oneops/rubygems_proxy | awk '{print $3}' )
+echo "owner is : $owner"
+if [ "$owner" == "root" ] ; then
+  chown -R oneops:oneops /home/oneops /opt/oneops
+  chown -R nagios:nagios /etc/nagios /var/log/nagios /etc/nagios/conf.d
+else
+  chown -R oneops:oneops /home/oneops/circuit-oneops-1 /home/oneops/shared /home/oneops/.ssh /opt/oneops/workorder /opt/oneops/rubygems_proxy
+fi
