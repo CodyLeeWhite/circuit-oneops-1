@@ -152,29 +152,12 @@ end
 # Proxys
 
 # Check against yum repos
-describe yumrepo('base') do
-  it { should exist }
-  it { should be_enabled }
-end
-describe command("curl -I `yum repolist base -v | grep Repo-baseurl | awk  '{print $3}'`") do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) { should match /200 OK/ }
-end
-describe yumrepo('extras') do
-  it { should exist }
-  it { should be_enabled }
-end
-describe command("curl -I `yum repolist extras -v | grep Repo-baseurl | awk  '{print $3}'`") do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) { should match /200 OK/ }
-end
-describe yumrepo('updates') do
-  it { should exist }
-  it { should be_enabled }
-end
-describe command("curl -I `yum repolist updates -v | grep Repo-baseurl | awk  '{print $3}'`") do
-  its(:exit_status) { should eq 0 }
-  its(:stdout) { should match /200 OK/ }
+yum_repos_url = `yum repolist enabled -v | grep Repo-baseurl | awk  '{print $3}'`.split
+yum_repos_url.each do |yum_url|
+  describe command("curl -I #{yum_url}") do
+    its(:exit_status) { should eq 0 }
+    its(:stdout) { should match /200 OK/ }
+  end
 end
 
 # Check against Gem sources
