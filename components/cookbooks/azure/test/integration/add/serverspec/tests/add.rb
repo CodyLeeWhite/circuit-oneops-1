@@ -18,9 +18,8 @@ require "#{COOKBOOKS_PATH}/azure_base/test/integration/azure_spec_utils"
 RSpec.configure do |c|
   c.filter_run_excluding :express_route_enabled => !AzureSpecUtils.new($node).is_express_route_enabled
 end
-
 RSpec.configure do |c|
-  c.filter_run_excluding :custom_image => !AzureSpecUtils.new($node).is_imagetypecustom
+  c.filter_run_excluding :custom_image => !(AzureSpecUtils.new($node).is_imagetypecustom || AzureSpecUtils.new($node).is_fast_image)
 end
 
 describe "azure node::create" do

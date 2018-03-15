@@ -84,16 +84,16 @@ if provider =~ /openstack/i
   describe 'Image used' do
     image_used = conn.images.get (server.image)['id']
     pattern = "wmlabs-#{ostype.gsub(/\./, "")}"
-    pattern_snap = "wmlabs-#{ostype.gsub(/\./, "")}.*snapshot"
+    $node['workorder']['config']['TESTING_MODE'].to_s.downcase == "true" ? pattern_snap = "RandomString" : pattern_snap = "snapshot"
     images = conn.images
 
     if image_used.name =~ /#{pattern}/i && image_used.name !~ /#{pattern_snap}/i
       context "When a fast image" do
         it "Flag should be set" do
-          expect($node['workorder']['config']['FAST_IMAGE']).to eql('true')
+          expect($node['workorder']['config']['FAST_IMAGE'].to_s.downcase == "true").to be true
         end
         it 'Should be latest' do
-          latest = find_latest_fast_image(images, pattern)
+          latest = find_latest_fast_image(images, pattern, pattern_snap)
           expect(latest.name).to eql(image_used.name)
         end
       end
@@ -102,10 +102,11 @@ if provider =~ /openstack/i
     if image_used.name =~ /#{pattern_snap}/i
       context "When a fast image snapshot" do
         it 'Flag should be set' do
-          expect($node['workorder']['config']['TESTING_MODE']).to eql('true')
+          expect($node['workorder']['config']['TESTING_MODE'].to_s.downcase == "true").to be true
         end
         it 'Should be latest' do
-          latest = find_latest_fast_image(images, pattern_snap)
+
+          latest = find_latest_fast_image(images, pattern, pattern_snap)
           expect(latest.name).to eql(image_used.name)
         end
       end

@@ -98,9 +98,9 @@ end
 # Looks up by name if global flag is set and flavor is not baremetal
 # Reverts to image id lookup if no Fast Image is found by name
 def get_image(images, flavor, flag_FAST_IMAGE, flag_TESTING_MODE, default_image, custom_id, ostype)
-  if flag_FAST_IMAGE.to_s == "true" && (flavor.nil? || flavor.name.downcase !~ /baremetal/i) && !custom_id
+  if flag_FAST_IMAGE.to_s.downcase == "true" && (flavor.nil? || flavor.name.downcase !~ /baremetal/i) && !custom_id
     pattern = "wmlabs-#{ostype.gsub(/\./, "")}"
-    flag_TESTING_MODE.to_s == "true" ? pattern_snap = "RandomString" : pattern_snap = "snapshot"
+    flag_TESTING_MODE.to_s.downcase == "true" ? pattern_snap = "RandomString" : pattern_snap = "snapshot"
     return_image = find_latest_fast_image(images, pattern, pattern_snap)
 
     if return_image.nil?

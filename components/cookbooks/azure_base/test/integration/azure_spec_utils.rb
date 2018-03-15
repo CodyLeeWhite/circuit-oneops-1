@@ -218,4 +218,46 @@ class AzureSpecUtils < SpecUtils
   def get_os_disk_name
     "#{get_server_name}_os_disk"
   end
+
+  def is_fast_image
+    cloud_name                 = @node[:workorder][:cloud][:ciName]
+    cloud                      = @node[:workorder][:services][:compute][cloud_name][:ciAttributes]
+    customimage_resource_group = @node[:workorder][:services][:compute][cloud_name][:ciAttributes][:resource_group].sub("mrg","img")
+    image                      = nil
+
+    if node[:workorder].has_key?('config') && node[:workorder][:config].has_key?('FAST_IMAGE')
+      fast_image_flag = (@node[:workorder][:config][:FAST_IMAGE].to_s.downcase == "true")
+    end
+    if node[:workorder].has_key?('config') && node[:workorder][:config].has_key?('TESTING_MODE')
+      testing_mode_flag  = (@node[:workorder][:config][:TESTING_MODE].to_s.downcase == "true")
+    end
+
+    # get ostype
+    ostype = "default-cloud"
+    if @node[:workorder][:payLoad].has_key?("os")
+      os = @node[:workorder][:payLoad][:os].first
+      ostype = os[:ciAttributes][:ostype]
+    else
+      if ostype == "default-cloud"
+        ostype = cloud[:ostype]
+      end
+    end
+
+
+
+    if fast_image_flag
+      # connection
+      creds = get_azure_creds
+      token_provider = MsRestAzure::ApplicationTokenProvider.new(creds[:tenant_id], creds[:client_id], creds[:client_secret])
+      credentials = MsRest::TokenCredentials.new(token_provider)
+      client = Azure::ARM::Resources::ResourceManagementClient.new(credentials)
+      client.subscription_id = creds[:subscription_id]
+
+      # get image list
+      images = client.resource_groups.list_resources(customimage_resource_group)
+      image = get_image(images, nil, fast_image_flag, testing_mode_flag, nil, false, ostype)
+    end
+
+    return !image.nil?
+  end
 end

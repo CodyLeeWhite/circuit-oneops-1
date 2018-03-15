@@ -34,7 +34,7 @@ if (ostype =~ /ubuntu-16.04/)
 end
 
 # detect fast image
-if File.exist?("/etc/oneops-tools-inventory.yml")
+if ostype !~ /windows/ && File.exist?("/etc/oneops-tools-inventory.yml")
   Chef::Log.info('Fast image detected')
   node.set['fast_image'] = true
 else
