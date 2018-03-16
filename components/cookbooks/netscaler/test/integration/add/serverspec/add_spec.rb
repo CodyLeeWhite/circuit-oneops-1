@@ -74,11 +74,12 @@ resp_obj = JSON.parse(conn.request(
 
 exists = resp_obj["message"] =~ /Done/ ? true : false
 
-context "lbserver" do
-  it "should exist" do
-    expect(exists).to eq(true)
-  end
-end
+# disabled because of bug
+# context "lbserver" do
+#   it "should exist" do
+#     expect(exists).to eq(true)
+#   end
+# end
 
 if exists
   lbip = resp_obj["lbvserver"][0]["ipv46"]
@@ -102,11 +103,12 @@ resp_obj = JSON.parse(conn.request(
 
 exists = resp_obj["message"] =~ /Done/ ? true : false
 
-context "lbserver_servicegroup" do
-  it "should exist" do
-    expect(exists).to eq(true)
-  end
-end
+# disabled because of bug
+# context "lbserver_servicegroup" do
+#   it "should exist" do
+#     expect(exists).to eq(true)
+#   end
+# end
 
 if exists
   bindings = resp_obj["lbvserver_servicegroup_binding"]
