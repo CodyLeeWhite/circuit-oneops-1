@@ -86,6 +86,7 @@ Chef::Log.info("RFC Action       : #{rfc_action}")
 Chef::Log.info("Storage Provider : #{node[:storage_provider_class]}")
 Chef::Log.info("Storage          : #{storage.inspect.gsub("\n",' ')}")
 Chef::Log.info("-------------------------------------------------------------")
+Chef::Log.debug(" ")
 
 # need ruby block so package resource above run first
 ruby_block 'create-iscsi-volume-ruby-block' do
@@ -553,3 +554,4 @@ ruby_block 'ramdisk tmpfs' do
     `mv /tmp/fstab /etc/fstab`
   end
 end
+
